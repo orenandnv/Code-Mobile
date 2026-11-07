@@ -1,7 +1,7 @@
 import { basename, extname } from './vfs';
 
 const BY_EXTENSION: Record<string, string> = {
-  js: 'javascript',
+  gd: 'gdscript',\n  zig: 'zig',\n  ex: 'elixir',\n  exs: 'elixir',\n  js: 'javascript',
   jsx: 'javascript',
   mjs: 'javascript',
   cjs: 'javascript',
@@ -74,7 +74,7 @@ const BY_NAME: Record<string, string> = {
   '.editorconfig': 'ini',
 };
 
-export const LANGUAGE_LABELS: Record<string, string> = {
+export const LANGUAGE_LABELS: Record<string, string> = {\n  gdscript: 'GDScript',\n  zig: 'Zig',\n  elixir: 'Elixir',
   javascript: 'JavaScript',
   typescript: 'TypeScript',
   json: 'JSON',
@@ -112,7 +112,7 @@ export const LANGUAGE_LABELS: Record<string, string> = {
   plaintext: 'Texto Simples',
 };
 
-export const LANGUAGE_EXTENSIONS: Record<string, string> = {
+export const LANGUAGE_EXTENSIONS: Record<string, string> = {\n  gdscript: 'gd',\n  zig: 'zig',\n  elixir: 'ex',
   javascript: 'js',
   typescript: 'ts',
   json: 'json',
@@ -150,7 +150,7 @@ export const LANGUAGE_EXTENSIONS: Record<string, string> = {
   plaintext: 'txt',
 };
 
-export const POPULAR_LANGUAGES = [
+export const POPULAR_LANGUAGES = [\n  'gdscript',\n  'zig',\n  'elixir',
   'javascript',
   'typescript',
   'luau',
