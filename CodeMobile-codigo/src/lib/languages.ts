@@ -1,7 +1,11 @@
 import { basename, extname } from './vfs';
 
 const BY_EXTENSION: Record<string, string> = {
-  gd: 'gdscript',\n  zig: 'zig',\n  ex: 'elixir',\n  exs: 'elixir',\n  js: 'javascript',
+  gd: 'gdscript',
+  zig: 'zig',
+  ex: 'elixir',
+  exs: 'elixir',
+  js: 'javascript',
   jsx: 'javascript',
   mjs: 'javascript',
   cjs: 'javascript',
@@ -74,7 +78,10 @@ const BY_NAME: Record<string, string> = {
   '.editorconfig': 'ini',
 };
 
-export const LANGUAGE_LABELS: Record<string, string> = {\n  gdscript: 'GDScript',\n  zig: 'Zig',\n  elixir: 'Elixir',
+export const LANGUAGE_LABELS: Record<string, string> = {
+  gdscript: 'GDScript',
+  zig: 'Zig',
+  elixir: 'Elixir',
   javascript: 'JavaScript',
   typescript: 'TypeScript',
   json: 'JSON',
@@ -112,7 +119,10 @@ export const LANGUAGE_LABELS: Record<string, string> = {\n  gdscript: 'GDScript'
   plaintext: 'Texto Simples',
 };
 
-export const LANGUAGE_EXTENSIONS: Record<string, string> = {\n  gdscript: 'gd',\n  zig: 'zig',\n  elixir: 'ex',
+export const LANGUAGE_EXTENSIONS: Record<string, string> = {
+  gdscript: 'gd',
+  zig: 'zig',
+  elixir: 'ex',
   javascript: 'js',
   typescript: 'ts',
   json: 'json',
@@ -150,7 +160,10 @@ export const LANGUAGE_EXTENSIONS: Record<string, string> = {\n  gdscript: 'gd',\
   plaintext: 'txt',
 };
 
-export const POPULAR_LANGUAGES = [\n  'gdscript',\n  'zig',\n  'elixir',
+export const POPULAR_LANGUAGES = [
+  'gdscript',
+  'zig',
+  'elixir',
   'javascript',
   'typescript',
   'luau',
