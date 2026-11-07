@@ -62,12 +62,14 @@ function appendStream(lines: string[], label: string, stream?: PistonStream): vo
   if (stdout) lines.push(...stdout.slice(0, OUTPUT_LIMIT).split('\n'));
   if (stderr) lines.push(...stderr.slice(0, OUTPUT_LIMIT).split('\n').map((line) => `[stderr] ${line}`));
   if (stream.code !== undefined && stream.code !== null && stream.code !== 0) lines.push(`${label}: processo terminou com código ${stream.code}`);
-  if (stream.signal) lines.push(`${label}: sinal ${stream.signal}`);\n  if (stream.message) lines.push(`${label}: ${stream.message}`);\n  if (stream.status) lines.push(`${label}: status ${stream.status}`);
+  if (stream.signal) lines.push(`${label}: sinal ${stream.signal}`);
+  if (stream.message) lines.push(`${label}: ${stream.message}`);
+  if (stream.status) lines.push(`${label}: status ${stream.status}`);
 }
 
 export async function runCode(source: string, filename: string, language: string, args: string[] = []): Promise<ScriptRun> {
   const started = performance.now();
-  if (LUAU_EXTENSIONS.includes(`.${filename.split('.').pop()?.toLowerCase() ?? ''}')) {
+  if (filename.toLowerCase().endsWith('.luau')) {
     return runLuau(source, filename, args);
   }
 
