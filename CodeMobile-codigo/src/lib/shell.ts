@@ -80,7 +80,7 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
   let args = tokens.slice(1);
 
   // `./script.luau arg` executa o script diretamente.
-  if (/^\\.\\.?\\/.+\\.[a-z0-9]+$/i.test(command)) {
+  if (/^\.\.?\/.+\.[a-z0-9]+$/i.test(command)) {
     args = [command, ...args];
     command = 'run';
   }
