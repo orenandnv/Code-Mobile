@@ -8,7 +8,7 @@ const definitions: Array<{ id: string; extensions: string[]; aliases: string[]; 
   },
   {
     id: 'zig', extensions: ['.zig'], aliases: ['Zig', 'zig'],
-    keywords: ['addrspace','align','allowzero','and','anyframe','anytype','asm','async','await','break','callconv','catch','comptime','const','continue','defer','else','enum','errdefer','error','export','extern','false','fn','for','if','inline','linksection','noalias','nosuspend','opaque','or','orelse','packed','pub','resume','return',' struct','suspend','switch','test','threadlocal','true','try','undefined','union','unreachable','usingnamespace','var','volatile','while'],
+    keywords: ['addrspace','align','allowzero','and','anyframe','anytype','asm','async','await','break','callconv','catch','comptime','const','continue','defer','else','enum','errdefer','error','export','extern','false','fn','for','if','inline','linksection','noalias','nosuspend','opaque','or','orelse','packed','pub','resume','return','struct','suspend','switch','test','threadlocal','true','try','undefined','union','unreachable','usingnamespace','var','volatile','while'],
     operators: ['=', '+=', '-=', '*=', '/=', '==', '!=', '<=', '>=', '=>'],
   },
   {
