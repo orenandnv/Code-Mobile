@@ -1,6 +1,6 @@
 import type { Theme } from './types';
 import { basename, dirname, extname, joinPath, normalizePath, resolvePath } from './vfs';
-import { LUAU_EXTENSIONS, type ScriptRun } from './luauRuntime';
+import type { ScriptRun } from './luauRuntime';\nimport { getRuntimeEndpoint, setRuntimeEndpoint } from './codeRuntime';\nimport { languageForPath } from './languages';
 
 export type ShellIO = {
   files: Record<string, string>;
@@ -14,7 +14,7 @@ export type ShellIO = {
   readFile?: (path: string) => string | undefined;
   /** Arquivo aberto, usado por `run` sem argumentos. */
   activePath?: string | null;
-  /** Executa um script; ausente quando nenhum runtime está disponível. */
+  /** Executa um script usando o runtime local Luau ou o servidor configurado. */
   runScript?: (path: string, source: string, args: string[]) => Promise<ScriptRun>;
 };
 
@@ -78,7 +78,7 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
   let args = tokens.slice(1);
 
   // `./script.luau arg` executa o script diretamente.
-  if (LUAU_EXTENSIONS.some((extension) => command.toLowerCase().endsWith(extension))) {
+  if (/^\\.\\.?\\/.+\\.[a-z0-9]+$/i.test(command)) {
     args = [command, ...args];
     command = 'run';
   }
@@ -103,7 +103,7 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
         '  wc <arquivo>      linhas, palavras e caracteres',
         '  tree              árvore do projeto',
         '  code <arquivo>    abre o arquivo no editor',
-        '  run [arquivo] [args] executa o script Luau (.luau/.lua)',
+        '  run [arquivo] [args] executa um programa compatível',\n        '  runtime endpoint <url> configura servidor Piston compatível',\n        '  runtime status mostra o servidor configurado',
         '  theme <dark|light|hc>',
         '  clear             limpa o terminal',
         '  date, whoami, about',
@@ -321,11 +321,32 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
       break;
     }
 
+    case 'runtime': {
+      const subcommand = args[0];
+      if (subcommand === 'status') {
+        lines.push(getRuntimeEndpoint() || 'Nenhum servidor Piston configurado.');
+      } else if (subcommand === 'endpoint' && args[1]) {
+        try {
+          const endpoint = args.slice(1).join(' ');
+          setRuntimeEndpoint(endpoint);
+          lines.push(`Servidor configurado: ${getRuntimeEndpoint()}`);
+        } catch (error) {
+          lines.push(`runtime: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      } else if (subcommand === 'endpoint' && !args[1]) {
+        setRuntimeEndpoint('');
+        lines.push('Servidor externo removido.');
+      } else {
+        lines.push('uso: runtime endpoint <https://host/api/v2> | runtime status | runtime endpoint');
+      }
+      break;
+    }
+
     case 'run':
     case 'luau': {
       const target = args[0] ? pathOf(args[0]) : (io.activePath ?? '');
       if (!target) {
-        lines.push('uso: run <arquivo.luau>  (ou abra um arquivo e digite "run")');
+        lines.push('uso: run <arquivo> [argumentos]  (ou abra um arquivo e digite "run")');
         break;
       }
       const source = io.readFile?.(target) ?? io.files[target];
@@ -333,17 +354,13 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
         lines.push(`run: ${args[0] ?? target}: arquivo não encontrado`);
         break;
       }
-      const rawExtension = extname(target) ? `.${extname(target)}` : '';
-      if (!LUAU_EXTENSIONS.includes(rawExtension)) {
-        lines.push(`run: "${rawExtension || 'sem extensão'}" não suportado — por enquanto só .luau e .lua`);
-        break;
-      }
       if (!io.runScript) {
-        lines.push('run: interpretador indisponível neste dispositivo');
+        lines.push('run: nenhum executor disponível neste dispositivo');
         break;
       }
       const scriptArgs = args.slice(1);
-      lines.push(`▶ ${basename(target)}${scriptArgs.length ? ` ${scriptArgs.join(' ')}` : ''}`);
+      const language = languageForPath(target);
+      lines.push(`▶ ${basename(target)} · ${language}${scriptArgs.length ? ` ${scriptArgs.join(' ')}` : ''}`);
       const result = await io.runScript(target, source, scriptArgs);
       lines.push(...result.lines);
       if (result.ok) lines.push(`✔ concluído em ${Math.max(1, Math.round(result.durationMs))} ms`);
