@@ -1,5 +1,5 @@
 /* Code Mobile service worker: offline app shell with stale-while-revalidate. */
-const CACHE = 'code-mobile-v1';
+const CACHE = 'code-mobile-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {
