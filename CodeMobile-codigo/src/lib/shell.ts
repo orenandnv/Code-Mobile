@@ -1,6 +1,8 @@
 import type { Theme } from './types';
 import { basename, dirname, extname, joinPath, normalizePath, resolvePath } from './vfs';
-import type { ScriptRun } from './luauRuntime';\nimport { getRuntimeEndpoint, setRuntimeEndpoint } from './codeRuntime';\nimport { languageForPath } from './languages';
+import type { ScriptRun } from './luauRuntime';
+import { getRuntimeEndpoint, setRuntimeEndpoint } from './codeRuntime';
+import { languageForPath } from './languages';
 
 export type ShellIO = {
   files: Record<string, string>;
@@ -103,7 +105,9 @@ export async function execCommand(raw: string, cwd: string, io: ShellIO): Promis
         '  wc <arquivo>      linhas, palavras e caracteres',
         '  tree              árvore do projeto',
         '  code <arquivo>    abre o arquivo no editor',
-        '  run [arquivo] [args] executa um programa compatível',\n        '  runtime endpoint <url> configura servidor Piston compatível',\n        '  runtime status mostra o servidor configurado',
+        '  run [arquivo] [args] executa um programa compatível',
+        '  runtime endpoint <url> configura servidor Piston compatível',
+        '  runtime status mostra o servidor configurado',
         '  theme <dark|light|hc>',
         '  clear             limpa o terminal',
         '  date, whoami, about',
