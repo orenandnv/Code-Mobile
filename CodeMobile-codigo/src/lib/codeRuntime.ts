@@ -1,5 +1,5 @@
 import type { ScriptRun } from './luauRuntime';
-import { runLuau, LUAU_EXTENSIONS } from './luauRuntime';
+import { runLuau } from './luauRuntime';
 import { languageForPath } from './languages';
 
 const ENDPOINT_KEY = 'code-mobile:piston-endpoint';
@@ -20,7 +20,7 @@ const NOT_EXECUTABLE = new Set([
 ]);
 
 type PistonRuntime = { language: string; version: string; aliases?: string[] };
-type PistonStream = { stdout?: string; stderr?: string; code?: number | null; signal?: string | null };
+type PistonStream = { stdout?: string; stderr?: string; code?: number | null; signal?: string | null; status?: string | null; message?: string | null };
 type PistonResponse = { language?: string; version?: string; run?: PistonStream; compile?: PistonStream };
 
 let runtimesCache: { endpoint: string; expires: number; runtimes: PistonRuntime[] } | null = null;
@@ -62,7 +62,7 @@ function appendStream(lines: string[], label: string, stream?: PistonStream): vo
   if (stdout) lines.push(...stdout.slice(0, OUTPUT_LIMIT).split('\n'));
   if (stderr) lines.push(...stderr.slice(0, OUTPUT_LIMIT).split('\n').map((line) => `[stderr] ${line}`));
   if (stream.code !== undefined && stream.code !== null && stream.code !== 0) lines.push(`${label}: processo terminou com código ${stream.code}`);
-  if (stream.signal) lines.push(`${label}: sinal ${stream.signal}`);
+  if (stream.signal) lines.push(`${label}: sinal ${stream.signal}`);\n  if (stream.message) lines.push(`${label}: ${stream.message}`);\n  if (stream.status) lines.push(`${label}: status ${stream.status}`);
 }
 
 export async function runCode(source: string, filename: string, language: string, args: string[] = []): Promise<ScriptRun> {
@@ -128,7 +128,7 @@ export async function runCode(source: string, filename: string, language: string
     appendStream(lines, 'compilação', result.compile);
     appendStream(lines, 'execução', result.run);
     if (lines.length === 1) lines.push('(sem saída)');
-    const ok = (result.compile?.code ?? 0) === 0 && (result.run?.code ?? 0) === 0 && !result.run?.signal;
+    const ok = (result.compile?.code ?? 0) === 0 && (result.run?.code ?? 0) === 0 && !result.run?.signal && !result.compile?.status && !result.run?.status && !result.compile?.message && !result.run?.message;
     return { ok, lines, durationMs: Math.round(performance.now() - started) };
   } catch (error) {
     const message = controller.signal.aborted
