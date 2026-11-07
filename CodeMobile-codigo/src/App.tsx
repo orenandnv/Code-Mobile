@@ -30,7 +30,7 @@ import {
 import { languageForPath, languageLabel } from './lib/languages';
 import { DEFAULT_SETTINGS, FONT_MAX, FONT_MIN, type Session, type Settings } from './lib/types';
 import type { ShellIO } from './lib/shell';
-import { runLuau } from './lib/luauRuntime';
+import { runCode } from './lib/codeRuntime';
 
 type Sidebar = 'explorer' | 'search' | null;
 type GoTo = { line: number; column?: number; token: number };
@@ -709,7 +709,7 @@ export default function App() {
       setTheme: (theme) => setSettings((previous) => ({ ...previous, theme })),
       readFile: (path) => buffersRef.current[path] ?? workspaceRef.current.files[path],
       activePath: active,
-      runScript: (path, source, args) => runLuau(source, basename(path), args),
+      runScript: (path, source, args) => runCode(source, basename(path), languageForPath(path), args),
     }),
     [active, focusFile, notify, removePath, setBuffers, setSettings, setWorkspace, workspace.files, workspace.folders],
   );

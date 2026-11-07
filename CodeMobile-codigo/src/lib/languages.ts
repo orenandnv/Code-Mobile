@@ -1,6 +1,10 @@
 import { basename, extname } from './vfs';
 
 const BY_EXTENSION: Record<string, string> = {
+  gd: 'gdscript',
+  zig: 'zig',
+  ex: 'elixir',
+  exs: 'elixir',
   js: 'javascript',
   jsx: 'javascript',
   mjs: 'javascript',
@@ -75,6 +79,9 @@ const BY_NAME: Record<string, string> = {
 };
 
 export const LANGUAGE_LABELS: Record<string, string> = {
+  gdscript: 'GDScript',
+  zig: 'Zig',
+  elixir: 'Elixir',
   javascript: 'JavaScript',
   typescript: 'TypeScript',
   json: 'JSON',
@@ -113,6 +120,9 @@ export const LANGUAGE_LABELS: Record<string, string> = {
 };
 
 export const LANGUAGE_EXTENSIONS: Record<string, string> = {
+  gdscript: 'gd',
+  zig: 'zig',
+  elixir: 'ex',
   javascript: 'js',
   typescript: 'ts',
   json: 'json',
@@ -151,6 +161,9 @@ export const LANGUAGE_EXTENSIONS: Record<string, string> = {
 };
 
 export const POPULAR_LANGUAGES = [
+  'gdscript',
+  'zig',
+  'elixir',
   'javascript',
   'typescript',
   'luau',

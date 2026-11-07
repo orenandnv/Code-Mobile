@@ -6,6 +6,7 @@ import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import { THEME_DEFINITIONS } from './lib/themes';
 import { LUAU_ID, luauConfiguration, luauLanguage, luauMonarch } from './lib/luau';
+import { registerExtraLanguages } from './lib/extraLanguages';
 
 const globalScope = self as unknown as {
   MonacoEnvironment?: { getWorker: (moduleId: string, label: string) => Worker };
@@ -51,6 +52,8 @@ monaco.languages.setMonarchTokensProvider(
   luauMonarch as unknown as Parameters<typeof monaco.languages.setMonarchTokensProvider>[1],
 );
 monaco.languages.setLanguageConfiguration(LUAU_ID, luauConfiguration);
+
+registerExtraLanguages(monaco);
 
 // VS Code's own default themes (Dark+, Light+, High Contrast Black).
 THEME_DEFINITIONS.forEach((definition) => {

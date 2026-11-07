@@ -2,6 +2,7 @@ import type { Settings } from '../lib/types';
 import { FONT_MAX, FONT_MIN } from '../lib/types';
 import { THEME_DEFINITIONS } from '../lib/themes';
 import { Icon } from './Icon';
+import { useLocale, type Locale } from '../i18n';
 
 function Switch({
   checked,
@@ -25,7 +26,7 @@ function Switch({
         role="switch"
         aria-checked={checked}
         aria-label={label}
-        className={`switch${checked ? ' on' : ''}`}
+        className={"switch" + (checked ? ' on' : '')}
         onClick={() => onChange(!checked)}
       >
         <span className="switch-knob" />
@@ -33,6 +34,11 @@ function Switch({
     </label>
   );
 }
+
+const LANGUAGE_OPTIONS: { value: Locale; label: string }[] = [
+  { value: 'pt-BR', label: 'Português (Brasil)' },
+  { value: 'en', label: 'English' },
+];
 
 export default function SettingsPanel({
   settings,
@@ -48,6 +54,7 @@ export default function SettingsPanel({
   onCopyWorkspace: () => void;
 }) {
   const themes = THEME_DEFINITIONS.map((definition) => ({ id: definition.id, label: definition.label }));
+  const [locale, setLocale] = useLocale();
 
   return (
     <div className="settings-page">
@@ -68,7 +75,7 @@ export default function SettingsPanel({
                 <button
                   type="button"
                   key={theme.id}
-                  className={`chip${settings.theme === theme.id ? ' on' : ''}`}
+                  className={"chip" + (settings.theme === theme.id ? ' on' : '')}
                   onClick={() => onChange({ theme: theme.id })}
                 >
                   {theme.label}
@@ -107,7 +114,7 @@ export default function SettingsPanel({
                 <button
                   type="button"
                   key={size}
-                  className={`chip${settings.tabSize === size ? ' on' : ''}`}
+                  className={"chip" + (settings.tabSize === size ? ' on' : '')}
                   onClick={() => onChange({ tabSize: size })}
                 >
                   {size} espaços
@@ -147,6 +154,28 @@ export default function SettingsPanel({
             checked={settings.autoSave}
             onChange={(value) => onChange({ autoSave: value })}
           />
+        </section>
+
+        <section className="settings-section">
+          <h3>Idioma</h3>
+          <div className="setting-row column">
+            <span className="setting-label">Idioma da interface</span>
+            <span className="setting-description">Escolha o idioma da interface</span>
+          </div>
+          <div className="setting-row column">
+            <div className="chip-row">
+              {LANGUAGE_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  className={"chip" + (locale === option.value ? ' on' : '')}
+                  onClick={() => setLocale(option.value)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="settings-section">
