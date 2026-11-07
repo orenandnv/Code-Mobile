@@ -41,7 +41,7 @@ Em uma máquina Linux com Docker, a instalação mínima documentada pelo Piston
 docker run --privileged -v "$PWD:/piston" -dit -p 2000:2000 --name piston_api ghcr.io/engineer-man/piston
 ```
 
-A API inicia sem runtimes de linguagem. Instale os pacotes desejados conforme a documentação do Piston. Publique a API somente atrás de HTTPS e com controles de acesso adequados; não exponha uma instância de execução de código irrestritamente à internet.
+A API inicia sem runtimes de linguagem. Instale os pacotes necessários usando a CLI do Piston (por exemplo, `cli/index.js ppman install python`, `cli/index.js ppman install zig` e `cli/index.js ppman install elixir`). Instale também os runtimes correspondentes às linguagens que pretende usar. GDScript exige um pacote de runtime adicional/customizado; não faz parte da distribuição padrão. Publique a API somente atrás de HTTPS e com controles de acesso adequados; não exponha uma instância de execução de código irrestritamente à internet. Configure CORS no proxy reverso para permitir a origem do Code Mobile e as requisições OPTIONS/POST.
 
 No Code Mobile, configure o endereço HTTPS da API (incluindo `/api/v2`) no terminal:
 
