@@ -7,7 +7,7 @@ const REQUEST_TIMEOUT_MS = 20000;
 const OUTPUT_LIMIT = 12000;
 
 const PISTON_LANGUAGE: Record<string, string> = {
-  javascript: 'javascript', typescript: 'typescript', python: 'python',
+  javascript: 'javascript', typescript: 'typescript', python: 'python', gdscript: 'gdscript',
   ruby: 'ruby', rust: 'rust', go: 'go', java: 'java', kotlin: 'kotlin',
   swift: 'swift', c: 'c', cpp: 'c++', csharp: 'csharp', php: 'php',
   shell: 'bash', lua: 'lua', perl: 'perl', r: 'rscript', dart: 'dart',
