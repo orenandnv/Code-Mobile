@@ -1,0 +1,110 @@
+name: Android APK build and emulator smoke test
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  android-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: CodeMobile-codigo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: CodeMobile-codigo/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Assemble Android project around the existing native shell
+        shell: bash
+        run: |
+          mkdir -p android-build/app/src/main
+          cp -R dist android-build/app/src/main/assets/www
+          cp -R android/java android-build/app/src/main/
+          cp -R android/res android-build/app/src/main/
+          cp android/AndroidManifest.xml android-build/app/src/main/AndroidManifest.xml
+          # The checked-in manifest references an icon resource that is not present in res/.
+          sed -i 's/android:icon="@drawable\/icon"//' android-build/app/src/main/AndroidManifest.xml
+          sed -i '/<application/i\    <uses-permission android:name="android.permission.INTERNET" />' android-build/app/src/main/AndroidManifest.xml
+          cat > android-build/settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          rootProject.name = 'CodeMobileAndroid'
+          include ':app'
+          EOF
+          cat > android-build/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.6.1' apply false
+          }
+          EOF
+          cat > android-build/app/build.gradle <<'EOF'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.codemobile.app'
+              compileSdk 35
+              defaultConfig {
+                  applicationId 'com.codemobile.app'
+                  minSdk 26
+                  targetSdk 34
+                  versionCode 2
+                  versionName '1.1'
+              }
+              sourceSets {
+                  main {
+                      java.srcDirs = ['src/main/java']
+                      res.srcDirs = ['src/main/res']
+                      assets.srcDirs = ['src/main/assets']
+                  }
+              }
+          }
+          EOF
+          cd android-build
+          gradle --no-daemon assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-mobile-debug-apk
+          path: CodeMobile-codigo/android-build/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Boot Android emulator and test installed APK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_2
+          script: |
+            adb install CodeMobile-codigo/android-build/app/build/outputs/apk/debug/app-debug.apk
+            adb shell am force-stop com.codemobile.app
+            adb shell am start -W -n com.codemobile.app/.MainActivity
+            sleep 20
+            adb shell pidof com.codemobile.app
+            adb logcat -d -t 3000 > /tmp/code-mobile-logcat.txt
+            if grep -E "FATAL EXCEPTION|Process: com.codemobile.app" /tmp/code-mobile-logcat.txt; then
+              echo "App crashed during emulator smoke test"
+              exit 1
+            fi
+            adb shell dumpsys activity activities | grep -q 'com.codemobile.app/.MainActivity'
+            echo "APK installed and MainActivity remained active on Android emulator."
