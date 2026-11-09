@@ -1,18 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import App from './App';
+import { I18nProvider } from './i18n';
 import './styles.css';
+import './styles/app-extra.css';
 
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      /* offline support is a bonus, never a blocker */
-    });
-  });
-}
+const container = document.getElementById('root');
+if (!container) throw new Error('elemento #root não encontrado');
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+createRoot(container).render(
+  <I18nProvider>
     <App />
-  </React.StrictMode>,
+  </I18nProvider>,
 );

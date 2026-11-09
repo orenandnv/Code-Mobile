@@ -9,7 +9,6 @@ freebuff-sites-build/
 *.log
 
 # entregáveis binários e pacotes de download
-*.apk
 *.idsig
 *.zip
 *.bundle
@@ -29,4 +28,6 @@ Thumbs.db
 # ícone do APK: gerado pelo build a partir de public/icons
 android/res/drawable/
 # i18n translations (keep them tracked)
+*.idsig
 # i18n translations (keep them tracked)
+*.idsig
