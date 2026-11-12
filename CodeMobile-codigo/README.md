@@ -5,6 +5,10 @@ aberto que também alimenta o VS Code. Interface própria, desenhada para toque 
 
 O APK já assinado está em [`CodeMobile.apk`](CodeMobile.apk) (debug signing, instalação por sideload).
 
+**Requisito de engine:** TypeScript, SQL (`sql.js`) e Luau precisam de WebAssembly moderno e
+Module Workers. Em WebView antiga (Chromium 66, Android 9 de fábrica) o app executa normalmente e
+avisa no terminal por que aquele runtime não roda — atualize o *Android System WebView* para usá-los.
+
 ## O que está incluído
 
 - **Novo arquivo em duas etapas**: escolha a linguagem primeiro, depois o nome — o editor já abre

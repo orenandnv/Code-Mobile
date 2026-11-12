@@ -8,8 +8,14 @@ O APK assinado está versionado neste repositório:
 
 - [`Code Mobile.apk`](Code%20Mobile.apk) — 5,0 MB, `versionCode 3`, `versionName 2.0.0`
 - [`CodeMobile-codigo/CodeMobile.apk`](CodeMobile-codigo/CodeMobile.apk) — mesmo binário
-- SHA-256: `0add1b58336449deee987b4df86fb5f8b0b60ab655de697966b4222cb2a2ed48`
+- SHA-256: `a0802eee9fd6208405d460fb348c243080e53f2136bbcd1f37af8ddff2c3665d`
 - Assinatura: APK Signature Scheme v2 **e** v3, zipalign 4 OK (minSdk 26 / targetSdk 34)
+
+**WebView exigida:** o app abre e funciona em WebView a partir do Chromium 66 (o do Android 9 de
+fábrica), graças à camada de compatibilidade em `public/compat.js`. TypeScript, SQL (`sql.js`) e
+Luau dependem de recursos posteriores (transpilação compatível, WebAssembly moderno e Module
+Workers); numa WebView antiga o app informa isso no terminal em vez de falhar em silêncio.
+Atualize o *Android System WebView* para usá-los no aparelho.
 
 ## O que roda de verdade
 
