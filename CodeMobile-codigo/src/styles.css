@@ -165,7 +165,7 @@ kbd {
 .app {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: var(--app-height, 100vh);
   overflow: hidden;
   background: var(--bg);
   color: var(--fg);

@@ -8,7 +8,7 @@ O APK assinado está versionado neste repositório:
 
 - [`Code Mobile.apk`](Code%20Mobile.apk) — 5,0 MB, `versionCode 3`, `versionName 2.0.0`
 - [`CodeMobile-codigo/CodeMobile.apk`](CodeMobile-codigo/CodeMobile.apk) — mesmo binário
-- SHA-256: `2e7904bdf36a63f177881bcc67f0ca4892bd19cb6a51f9d2b4530b7eabe4b76b`
+- SHA-256: `81d7ca97fed3813d078803ec40222f44fecbeecc4931308f0c93eea5b301caa0`
 - Assinatura: APK Signature Scheme v2 **e** v3, zipalign 4 OK (minSdk 26 / targetSdk 34)
 
 **WebView exigida:** o app abre e funciona em WebView a partir do Chromium 66 (o do Android 9 de

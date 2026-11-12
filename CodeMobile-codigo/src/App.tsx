@@ -178,6 +178,35 @@ export default function App() {
     };
   }, []);
 
+  // Mantém a altura do app sincronizada com a área visível (teclado virtual no Android).
+  // Sem isso, a barra de teclas extras (KeyBar) fica coberta pelo teclado.
+  useEffect(() => {
+    const update = () => {
+      const vv = window.visualViewport;
+      const h = vv ? vv.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', `${Math.round(h)}px`);
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    const vv = window.visualViewport;
+    if (vv) {
+      vv.addEventListener('resize', update);
+      vv.addEventListener('scroll', update);
+    }
+    // Polling leve: alguns WebViews Android não disparam visualViewport.resize.
+    const timer = window.setInterval(update, 400);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+      if (vv) {
+        vv.removeEventListener('resize', update);
+        vv.removeEventListener('scroll', update);
+      }
+      window.clearInterval(timer);
+    };
+  }, []);
+
   useEffect(() => {
     if (!ready) return;
     prefSet(SETTINGS_KEY, settings);
