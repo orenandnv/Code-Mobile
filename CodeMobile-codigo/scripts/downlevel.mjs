@@ -23,7 +23,10 @@ const skipped = [];
 // Literais BigInt (ES2020) também não parseiam no Chrome 66. Os únicos no
 // projeto são limites de inteiro 64 bits do bridge do Luau; viram chamadas
 // BigInt("..."), que parseiam em qualquer engine (só falham se executadas).
-const BIGINT_LITERAL = /(-?)(\d{16,})n\b/g;
+// O worker do Luau usa literais curtos (1n, -1n) além dos limites de 64 bits,
+// então a regra precisa cobrir qualquer inteiro — sem tocar em texto dentro de
+// strings, por isso a exigência de não vir logo depois de aspas ou identificador.
+const BIGINT_LITERAL = /(?<![\w$.'"`])(-?)(\d+)n(?![\w$])/g;
 
 for (const name of files) {
   const path = new URL(name, dir);
