@@ -91,7 +91,7 @@ export function PreviewPanel({
             onClick={onToggleAutoRefresh}
             title={t('preview.autoRefresh')}
           >
-            <Icon name="sparkle" size={15} />
+            <Icon name="loop" size={15} />
           </button>
           <button
             type="button"

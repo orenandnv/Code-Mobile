@@ -124,11 +124,21 @@ export async function runLuau(request: RunRequest): Promise<RunResult> {
     flush();
     dispose();
     const aborted = controller.signal.aborted;
+    const message = error instanceof Error ? error.message : String(error);
     emit(
       request,
       'stderr',
-      `✖ ${aborted ? `tempo limite de ${TIMEOUT_MS / 1000}s excedido` : error instanceof Error ? error.message : String(error)}`,
+      `✖ ${aborted ? `tempo limite de ${TIMEOUT_MS / 1000}s excedido` : message}`,
     );
+    // O worker do Luau é um módulo ES com WebAssembly; o WebView de fábrica do
+    // Android 9 (Chromium 66) não cria module workers.
+    if (!aborted && /worker|module|wasm|webassembly/i.test(message)) {
+      emit(
+        request,
+        'meta',
+        'O runtime Luau precisa de module workers + WebAssembly, que este WebView (Chromium 66) não oferece. Atualize o System WebView/Chrome do aparelho.',
+      );
+    }
     return {
       ok: false,
       exitCode: 1,

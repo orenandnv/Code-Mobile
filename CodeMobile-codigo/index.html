@@ -16,6 +16,9 @@
     <link rel="icon" type="image/svg+xml" href="./icon.svg" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>Code Mobile</title>
+    <!-- Script clássico: roda antes do bundle e preenche o que o WebView do
+         Android 9 (Chrome 66) ainda não tem. Precisa ficar antes do módulo. -->
+    <script src="./compat.js"></script>
   </head>
   <body>
     <div id="root"></div>

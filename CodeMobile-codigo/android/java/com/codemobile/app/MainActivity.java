@@ -37,6 +37,10 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.parseColor("#252526"));
         getWindow().setNavigationBarColor(Color.parseColor("#1e1e1e"));
 
+        // Permite inspecionar a WebView com chrome://inspect (ou CDP via adb).
+        // Sem isso não há como ler o console da página em um aparelho real.
+        WebView.setWebContentsDebuggingEnabled(true);
+
         webView = new WebView(this);
         webView.setBackgroundColor(Color.parseColor("#1e1e1e"));
 

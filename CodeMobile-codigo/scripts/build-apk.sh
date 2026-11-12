@@ -4,13 +4,23 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-TOOLCHAIN="${TOOLCHAIN:-$ROOT/.toolchain}"
+
+# O toolchain pode estar no projeto ou um nível acima (é o layout do repo).
+resolve_toolchain() {
+  if [ -n "${TOOLCHAIN:-}" ]; then echo "$TOOLCHAIN"; return; fi
+  for candidate in "$ROOT/.toolchain" "$ROOT/../.toolchain"; do
+    if [ -d "$candidate/sdk" ]; then echo "$(cd "$candidate" && pwd)"; return; fi
+  done
+  echo "$ROOT/.toolchain"
+}
+TOOLCHAIN="$(resolve_toolchain)"
 JAVA_HOME="${JAVA_HOME:-$TOOLCHAIN/jdk-17.0.13+11}"
 export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"
 
 SDK="${ANDROID_SDK_ROOT:-$TOOLCHAIN/sdk}"
-BUILD_TOOLS="$SDK/build-tools/34.0.0"
+BUILD_TOOLS_VERSION="${BUILD_TOOLS_VERSION:-$(ls "$SDK/build-tools" 2>/dev/null | sort -V | tail -1)}"
+BUILD_TOOLS="$SDK/build-tools/${BUILD_TOOLS_VERSION:-34.0.0}"
 ANDROID_JAR="$SDK/platforms/android-34/android.jar"
 OUT="$ROOT/android/build"
 MIN_SDK=26

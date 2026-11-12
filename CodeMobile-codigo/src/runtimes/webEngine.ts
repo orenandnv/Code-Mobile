@@ -110,13 +110,15 @@ export function transpile(source: string, filename: string): string {
   const isTypeScript = /\.(ts|mts|cts|tsx)$/i.test(filename);
   const isTsx = /\.tsx$/i.test(filename);
   const isJsx = /\.(jsx|tsx)$/i.test(filename);
+  // O preset-typescript só entra em arquivos TS. Aplicado a .js ele passa a
+  // interpretar o arquivo como TypeScript e, no WebView do Android 9
+  // (Chrome 66), o Babel 7 lança "Identifier 'X' has already been declared"
+  // para código JavaScript válido. .js/.jsx não precisam de strip de tipos.
   const presets: unknown[] = [
     ['env', { modules: 'commonjs', targets: { chrome: '100' } }],
     ['react', { runtime: 'classic' }],
-    isTypeScript
-      ? ['typescript', { allExtensions: true, isTSX: isTsx || isJsx }]
-      : ['typescript', { allExtensions: true, isTSX: false, onlyRemoveTypeImports: false }],
   ];
+  if (isTypeScript) presets.push(['typescript', { allExtensions: true, isTSX: isTsx || isJsx }]);
   try {
     const result = Babel.transform(source, {
       filename,
@@ -165,7 +167,17 @@ export async function runWebScript(request: RunRequest): Promise<RunResult> {
   try {
     built = buildModules(request);
   } catch (error) {
-    emit(request, 'stderr', `✖ ${error instanceof Error ? error.message : String(error)}`);
+    const message = error instanceof Error ? error.message : String(error);
+    // O Babel 7 não transpila TypeScript no WebView de fábrica do Android 9
+    // (Chromium 66): qualquer declaração de tipo quebra com "already declared"
+    // dentro do preset-typescript. Melhor dizer o motivo do que fingir que
+    // o arquivo tem erro de sintaxe.
+    const isTypeScriptFile = /\.(ts|tsx|mts|cts)$/i.test(request.filename);
+    const hint =
+      isTypeScriptFile && /already been declared/i.test(message)
+        ? '\nO transpilador de TypeScript não funciona neste WebView (Chromium 66). Atualize o System WebView/Chrome do aparelho para executar .ts.'
+        : '';
+    emit(request, 'stderr', `✖ ${message}${hint}`);
     return {
       ok: false,
       exitCode: 1,

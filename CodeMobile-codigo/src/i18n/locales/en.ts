@@ -44,7 +44,7 @@ const dict: Record<string, string> = {
   'explorer.newFile': 'New file',
   'explorer.newFolder': 'New folder',
   'explorer.empty': 'No files in this project',
-  'explorer.footnote': '{files} files · {folders} folders',
+  'explorer.footnote': 'files: {files} · folders: {folders}',
   'explorer.projects': 'Projects',
 
   'search.title': 'Search',

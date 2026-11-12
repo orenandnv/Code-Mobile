@@ -7,7 +7,8 @@ export type IconName =
   | 'file' | 'file-plus' | 'terminal' | 'settings' | 'code' | 'play' | 'stop' | 'refresh' | 'eye'
   | 'git' | 'trash' | 'edit' | 'copy' | 'chevron-down' | 'chevron-right' | 'check' | 'globe'
   | 'download' | 'upload' | 'layers' | 'keyboard' | 'arrow-left' | 'arrow-right' | 'arrow-up'
-  | 'arrow-down' | 'sparkle' | 'bug' | 'extensions' | 'monitor' | 'list' | 'folder-open' | 'info';
+  | 'arrow-down' | 'sparkle' | 'bug' | 'extensions' | 'monitor' | 'list' | 'folder-open' | 'info'
+  | 'loop';
 
 const PATHS: Record<IconName, ReactNode> = {
   menu: <><path d="M3 6h18M3 12h18M3 18h18" /></>,
@@ -51,6 +52,7 @@ const PATHS: Record<IconName, ReactNode> = {
   monitor: <><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></>,
   list: <><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></>,
   info: <><circle cx="12" cy="12" r="9" /><path d="M12 10v7M12 7h.01" /></>,
+  loop: <><path d="M17 2.5 20.5 6 17 9.5" /><path d="M3.5 11.5V11a4 4 0 0 1 4-4h13" /><path d="M7 21.5 3.5 18 7 14.5" /><path d="M20.5 12.5V13a4 4 0 0 1-4 4h-13" /></>,
 };
 
 export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {

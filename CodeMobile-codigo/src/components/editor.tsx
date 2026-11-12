@@ -61,6 +61,10 @@ export function EditorPane({
       cursorSmoothCaretAnimation: 'on',
       renderLineHighlight: 'line',
       scrollBeyondLastLine: false,
+      // Sticky scroll é um recurso de desktop: numa tela de 540px ele come
+      // 5 linhas do código e, no WebView do Android 9, o provider de folding
+      // lança uma exceção não tratada a cada recálculo.
+      stickyScroll: { enabled: false },
       padding: { top: 8, bottom: 120 },
       overviewRulerLanes: 0,
       scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10, alwaysConsumeMouseWheel: false },
@@ -206,13 +210,13 @@ export function KeyBar({
           ↷
         </button>
         <button type="button" className="kbtn" onClick={() => command('editor.action.triggerSuggest')} aria-label="Sugestões">
-          ⚡
+          {'{}'}
         </button>
         <button type="button" className="kbtn" onClick={() => command('actions.find')} aria-label="Localizar">
           <Icon name="search" size={15} />
         </button>
         <button type="button" className="kbtn" onClick={() => command('editor.action.formatDocument')} aria-label="Formatar">
-          <Icon name="sparkle" size={15} />
+          <Icon name="code" size={15} />
         </button>
         <button type="button" className="kbtn" onClick={() => command('editor.action.commentLine')} aria-label="Comentar">
           //

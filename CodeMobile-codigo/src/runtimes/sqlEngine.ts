@@ -58,7 +58,18 @@ export async function runSql(request: RunRequest): Promise<RunResult> {
       location: 'local',
     };
   } catch (error) {
-    emit(request, 'stderr', `✖ ${error instanceof Error ? error.message : String(error)}`);
+    const message = error instanceof Error ? error.message : String(error);
+    emit(request, 'stderr', `✖ ${message}`);
+    // O WebView de fábrica do Android 9 (Chromium 66) não decodifica o
+    // WebAssembly gerado pelo sql.js — melhor avisar do que mostrar
+    // "Wasm decoding failed" sem explicação.
+    if (/wasm|webassembly|compileerror|decoding/i.test(message)) {
+      emit(
+        request,
+        'meta',
+        'Este WebView (Chromium 66) não carrega o WebAssembly do SQLite. Atualize o System WebView/Chrome do aparelho para executar SQL.',
+      );
+    }
     return {
       ok: false,
       exitCode: 1,

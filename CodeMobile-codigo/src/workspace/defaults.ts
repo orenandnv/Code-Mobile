@@ -84,7 +84,7 @@ function render() {
   }
 }
 
-document.querySelector('#action')?.addEventListener('click', () => {
+(document.querySelector('#action')||{addEventListener(){}}).addEventListener('click', () => {
   state.count += 1;
   state.history.push(state.count);
   render();
